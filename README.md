@@ -1,5 +1,7 @@
 # Super Traffic Spawn Block
 
+[Subscribe on Paradox Mods](https://mods.paradoxplaza.com/mods/160650/Windows) · [Support forum](https://forum.paradoxplaza.com/forum/threads/super-traffic-spawn-block.1942707/)
+
 Add traffic where you want it. Send it out of the city or to a sink block.
 Both custom block assets are included.
 
