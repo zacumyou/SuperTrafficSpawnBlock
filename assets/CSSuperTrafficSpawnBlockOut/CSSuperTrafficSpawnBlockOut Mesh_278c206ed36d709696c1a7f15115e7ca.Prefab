@@ -1,0 +1,40 @@
+{"$id":0,"$type":"0|Game.Prefabs.RenderPrefab, Game","name":"CSSuperTrafficSpawnBlockOut Mesh","active":true,"version":1,"m_prefabFormat":0,"components":{"$id":1,"$type":"1|System.Collections.Generic.List`1[[Game.Prefabs.ComponentBase, Game]], mscorlib","$rlength":2,"$rcontent":[{"$id":2,"$type":"2|Game.Prefabs.LodProperties, Game","name":"LodProperties","active":true,"m_Bias":0,"m_ShadowBias":0,"m_LodMeshes":{"$id":3,"$type":"3|Game.Prefabs.RenderPrefab[], Game","$rlength":2,"$rcontent":[$fstrref:"CID:3054493d81dbc9f98f13863b18557d38",$fstrref:"CID:6d9c1b2bf11c7dc8921f318bebd94d09"]}},{
+    "$id": 5,
+    "$type": "7|Game.Prefabs.EmissiveProperties, Game",
+    "name": "EmissiveProperties",
+    "active": true,
+    "m_SingleLights": {
+    "$id": 6,
+    "$type": "8|System.Collections.Generic.List`1[[Game.Prefabs.EmissiveProperties+SingleLightMapping, Game]], System.Private.CoreLib",
+    "$rlength": 1,
+    "$rcontent": [
+    {
+    "$id": 7,
+    "$type": "9|Game.Prefabs.EmissiveProperties+SingleLightMapping, Game",
+    "previewState": false,
+    "purpose": 34,
+    "color": {
+        "$type": "10|UnityEngine.Color, UnityEngine.CoreModule",
+        1,
+        1,
+        1,
+        1
+    },
+    "colorOff": {
+        "$type": 10,
+        0,
+        0,
+        0,
+        1
+    },
+    "intensity": 5,
+    "luminance": 0,
+    "responseTime": 0,
+    "animationIndex": -1,
+    "materialId": 0
+}]
+},
+    "m_MultiLights": null,
+    "m_AnimationCurves": null,
+    "m_SignalGroupAnimations": null
+}]},"m_GeometryAsset":$fstrref:"CID:8e738167a71f67a6cf4343ad97d8772d","m_SurfaceAssets":{"$id":4,"$type":"4|Colossal.IO.AssetDatabase.AssetReference`1[[Colossal.IO.AssetDatabase.SurfaceAsset, Colossal.IO.AssetDatabase, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]][], Colossal.IO.AssetDatabase","$rlength":1,"$rcontent":[$fstrref:"CID:bd697dff07cb7011592f7da76ba22edc"]},"m_Bounds":{"$type":"5|Colossal.Mathematics.Bounds3, Colossal.Mathematics","min":{"$type":"6|Unity.Mathematics.float3, Unity.Mathematics","x":-2,"y":0,"z":-2},"max":{"$type":6,"x":2,"y":4,"z":2}},"m_SurfaceArea":156.45738185444063,"m_IndexCount":1536,"m_VertexCount":1484,"m_MeshCount":1,"m_IsImpostor":false,"m_ManualVTRequired":false}

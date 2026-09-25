@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings></PropertyGroup>
+  <ItemGroup><Compile Include="..\src\DispatchPlan.cs" Link="DispatchPlan.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="..\src\TrafficPolicy.cs" Link="TrafficPolicy.cs" /></ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\src\ConnectedLaneSelector.cs" Link="ConnectedLaneSelector.cs" />
+    <Compile Include="..\src\DepartureRange.cs" Link="DepartureRange.cs" />
+  </ItemGroup>
+<ItemGroup><Compile Include="..\src\SpawnPacing.cs" Link="SpawnPacing.cs" /></ItemGroup><ItemGroup><Compile Include="..\src\CongestionGate.cs" Link="CongestionGate.cs" /></ItemGroup><ItemGroup><Compile Include="..\src\BlockVariants.cs" Link="BlockVariants.cs" /></ItemGroup><ItemGroup><Compile Include="..\src\DestinationRules.cs" Link="DestinationRules.cs" /></ItemGroup><ItemGroup><Compile Include="..\src\DestinationAllocation.cs" Link="DestinationAllocation.cs" /></ItemGroup><ItemGroup><Compile Include="..\src\RouteRequestBudget.cs" Link="RouteRequestBudget.cs" /></ItemGroup></Project>
+
+
+
+
+
+

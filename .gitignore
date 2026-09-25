@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+**/node_modules/
+local/
+research/
+backups/
+publishing/
+artwork/
+*.user
+*.suo

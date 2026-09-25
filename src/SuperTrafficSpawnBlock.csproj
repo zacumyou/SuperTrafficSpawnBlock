@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Configurations>Debug;Release</Configurations>
+    <Version>0.4.0</Version>
+    <AssemblyName>SuperTrafficSpawnBlock</AssemblyName>
+    <RootNamespace>SuperTrafficSpawnBlock</RootNamespace>
+    <AssemblyTitle>Super Traffic Spawn Block</AssemblyTitle>
+    <Product>Super Traffic Spawn Block</Product>
+  </PropertyGroup>
+  <Import Project="$(CSII_TOOLPATH)\Mod.props" />
+  <Import Project="$(CSII_TOOLPATH)\Mod.targets" />
+  <PropertyGroup>
+    <UserDataPath>$(CSII_USERDATAPATH)</UserDataPath>
+    <UnityModProjectPath>$(CSII_UNITYMODPROJECTPATH)</UnityModProjectPath>
+    <ModPostProcessorPath>$(CSII_MODPOSTPROCESSORPATH)</ModPostProcessorPath>
+    <ModPublisherPath>$(CSII_MODPUBLISHERPATH)</ModPublisherPath>
+    <MSCORLIBPath>$(CSII_MSCORLIBPATH)</MSCORLIBPath>
+    <LocalModsPath>$(MSBuildProjectDirectory)\..\local</LocalModsPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\lang\en-US.json" LogicalName="SuperTrafficSpawnBlock.lang.en-US.json" />
+    <EmbeddedResource Include="..\lang\ko-KR.json" LogicalName="SuperTrafficSpawnBlock.lang.ko-KR.json" />
+    <Reference Include="Newtonsoft.Json"><Private>false</Private></Reference>
+    <Reference Include="Game;Colossal.Core;Colossal.Mathematics;Colossal.Logging;Colossal.IO.AssetDatabase;Colossal.Collections;Colossal.Localization;Colossal.UI;Colossal.UI.Binding;cohtml.Net;UnityEngine.CoreModule;Unity.Collections;Unity.Entities;Unity.Mathematics">
+      <Private>false</Private>
+    </Reference>
+    <Reference Update="System;System.Core;System.Data"><Private>false</Private></Reference>
+  </ItemGroup>
+  <Target Name="DeployWIP" AfterTargets="AfterBuild" Condition="'$(NeedBuild)'">
+    <ItemGroup><FilesToDeploy Include="$(OutDir)\SuperTrafficSpawnBlock*.dll;$(OutDir)\SuperTrafficSpawnBlock*.pdb" /></ItemGroup>
+    <MakeDir Directories="$(DeployDir)" />
+    <ItemGroup><IconFiles Include="$(MSBuildProjectDirectory)\..\icons\*.svg" /></ItemGroup>
+    <Copy SourceFiles="@(IconFiles)" DestinationFolder="$(DeployDir)\icons" />
+    <ItemGroup><LocaleFiles Include="$(MSBuildProjectDirectory)\..\lang\*.json" /></ItemGroup>
+    <Copy SourceFiles="@(LocaleFiles)" DestinationFolder="$(DeployDir)\lang" />
+    <ItemGroup><BlockAssets Include="$(MSBuildProjectDirectory)\..\assets\**\*" /></ItemGroup>
+    <Copy SourceFiles="@(BlockAssets)" DestinationFiles="@(BlockAssets->'$(DeployDir)\assets\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(FilesToDeploy)" DestinationFolder="$(DeployDir)" />
+  </Target>
+</Project>
+
+
+
+
+
+
+
+
+
+
+
+
+

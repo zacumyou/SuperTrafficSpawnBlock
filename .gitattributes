@@ -1,0 +1,4 @@
+* text=auto
+assets/** -text
+*.png binary
+*.jpg binary
