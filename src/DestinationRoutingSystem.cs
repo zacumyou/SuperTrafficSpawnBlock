@@ -29,6 +29,7 @@ namespace SuperTrafficSpawnBlock
             internal string Status = "FindingRoute";
             internal uint ValidatedTick;
             internal bool ValidatedHeavy;
+            internal uint Revision, ProbeRevision;
         }
         private readonly Dictionary<(Entity source, Entity choice), State> states = new Dictionary<(Entity source, Entity choice), State>();
         private readonly HashSet<(Entity source, Entity choice)> live = new HashSet<(Entity source, Entity choice)>();
@@ -55,6 +56,18 @@ namespace SuperTrafficSpawnBlock
         public override int GetUpdateInterval(SystemUpdatePhase phase) => 256;
         public override int GetUpdateOffset(SystemUpdatePhase phase) => 32;
         protected override void OnGamePreload(Purpose purpose, GameMode mode) { states.Clear(); tick = 0; requestCursor = 0; }
+        internal void InvalidateBlock(Entity block)
+        {
+            foreach (var pair in states)
+            {
+                if (pair.Key.source != block && pair.Key.choice != block) continue;
+                var state = pair.Value;
+                state.Route = null;
+                state.Retry = state.Refresh = 0;
+                state.Revision++;
+                // Leave pending probes alive until their pathfinding job completes.
+            }
+        }
         internal bool Alive(Entity e) => EntityManager.Exists(e) && !EntityManager.HasComponent<Deleted>(e) && !EntityManager.HasComponent<Destroyed>(e) && !EntityManager.HasComponent<Temp>(e);
         internal bool IsSink(Entity e) => Alive(e) && EntityManager.HasComponent<PrefabRef>(e) && EntityManager.GetComponentData<PrefabRef>(e).m_Prefab == blocks.SinkPrefab;
         internal void EnsureTargets(Entity source)
@@ -88,10 +101,11 @@ namespace SuperTrafficSpawnBlock
             var result = new List<Route>();
             foreach (Entity choice in Choices(source))
             {
+                if (choice != Entity.Null && !BlockServiceSystem.IsOn(EntityManager, choice)) continue;
                 if (!states.TryGetValue((source, choice), out var state) || state.Route == null || !Validate(state, choice)) return null;
                 result.Add(state.Route);
             }
-            return result; // Wait for all selected routes: never redistribute a missing destination's share.
+            return result.Count == 0 ? null : result; // Keep disabled targets saved; resume their share when enabled.
         }
         private bool Validate(State state, Entity choice)
         {
@@ -139,7 +153,7 @@ namespace SuperTrafficSpawnBlock
                     {
                         var info = EntityManager.GetComponentData<PathInformation>(state.Probe);
                         if ((info.m_State & PathFlags.Pending) != 0) continue;
-                        if (info.m_Origin == source && (info.m_State & (PathFlags.Failed | PathFlags.Obsolete)) == 0)
+                        if (state.ProbeRevision == state.Revision && info.m_Origin == source && (info.m_State & (PathFlags.Failed | PathFlags.Obsolete)) == 0)
                         {
                             var buffer = EntityManager.GetBuffer<PathElement>(state.Probe, true);
                             var path = new PathElement[buffer.Length];
@@ -187,6 +201,7 @@ namespace SuperTrafficSpawnBlock
                     var start = new SetupQueueTarget { m_Type = SetupTargetType.CurrentLocation, m_Entity = source, m_Methods = methods, m_RoadTypes = RoadTypes.Car };
                     var end = new SetupQueueTarget { m_Type = SetupTargetType.CurrentLocation, m_Entity = destination, m_Methods = methods, m_RoadTypes = RoadTypes.Car };
                     state.Probe = EntityManager.CreateEntity(typeof(PathInformation), typeof(PathElement), typeof(RandomTrafficRequest), typeof(RouteProbe));
+                    state.ProbeRevision = state.Revision;
                     EntityManager.SetComponentData(state.Probe, traffic);
                     EntityManager.SetComponentData(state.Probe, new PathInformation { m_State = PathFlags.Pending });
                     setup.GetQueue(this, 64).Enqueue(new SetupQueueItem(state.Probe, parameters, start, end));

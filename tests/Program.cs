@@ -1,4 +1,6 @@
 using SuperTrafficSpawnBlock;
+AdjacentRoadGeometryTests.Run();
+SpawnFootprintTests.Run();
 
 var plan = new DispatchPlan<int>();
 var ready = new HashSet<int> { 11, 22 };
@@ -113,3 +115,14 @@ Check(RouteRequestBudget.Available(15) == 1, "pending limit leaves one slot");
 Check(RouteRequestBudget.Available(16) == 0 && RouteRequestBudget.Available(20) == 0, "pending cap stops new work");
 Check(RouteRequestBudget.Available(12) == 4, "completed work releases capacity");
 Console.WriteLine("PASS: global path request window and in-flight limits.");
+
+var rates = new RateSchedule<int>();
+Check(Enumerable.Range(0,100).Sum(_ => rates.Next(1, RateSchedule<int>.Half)) == 50, "half rate is one attempt per two windows");
+Check(rates.Next(2, RateSchedule<int>.Half) == 0 && rates.Next(3, RateSchedule<int>.Half) == 0 && rates.Next(2, RateSchedule<int>.Half) == 1, "independent half rate blocks");
+rates.Reset(3); Check(rates.Next(3, RateSchedule<int>.Half) == 0, "disable clears fractional budget without catch-up");
+Check(rates.Next(3,3)==3 && rates.Next(3,15)==15 && rates.Next(3,RateSchedule<int>.Half)==0, "switching rates resets fractional credit");
+Check(RateSchedule<int>.Allowed(-2) && RateSchedule<int>.Allowed(3) && RateSchedule<int>.Allowed(15) && !RateSchedule<int>.Allowed(0), "new rates validated");
+rates.Clear(); Check(rates.Next(2, RateSchedule<int>.Half)==0, "load resets fractional credit");
+Console.WriteLine("PASS: half rate pacing, 3x/15x, independent blocks, disable/rate-change/load resets.");
+
+

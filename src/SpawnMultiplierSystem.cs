@@ -20,6 +20,7 @@ namespace SuperTrafficSpawnBlock
         private BlockPrefabSystem registration;
         private TrafficSpawnerAISystem native;
         private DestinationRoutingSystem routing;
+        private SpawnClearanceSystem clearance;
         private UpdateSystem updates;
         private EndFrameBarrier barrier;
         private EntityArchetype completionArchetype, replayArchetype;
@@ -30,6 +31,7 @@ namespace SuperTrafficSpawnBlock
         private readonly HashSet<Entity> seen = new HashSet<Entity>();
         private readonly HashSet<Entity> live = new HashSet<Entity>();
         private Unity.Mathematics.Random random;
+        private readonly RateSchedule<Entity> schedule = new RateSchedule<Entity>();
 
         protected override void OnCreate()
         {
@@ -38,6 +40,7 @@ namespace SuperTrafficSpawnBlock
             registration = World.GetOrCreateSystemManaged<BlockPrefabSystem>();
             native = World.GetOrCreateSystemManaged<TrafficSpawnerAISystem>();
             routing = World.GetOrCreateSystemManaged<DestinationRoutingSystem>();
+            clearance = World.GetOrCreateSystemManaged<SpawnClearanceSystem>();
             updates = World.GetOrCreateSystemManaged<UpdateSystem>();
             barrier = World.GetOrCreateSystemManaged<EndFrameBarrier>();
             completionArchetype = EntityManager.CreateArchetype(typeof(HandleRequest), typeof(Event));
@@ -50,7 +53,7 @@ namespace SuperTrafficSpawnBlock
             waiting = GetEntityQuery(ComponentType.ReadOnly<Car>(), ComponentType.ReadOnly<Unspawned>(), ComponentType.ReadOnly<TripSource>());
             RequireForUpdate(blocks);
         }
-        protected override void OnGamePreload(Purpose purpose, GameMode mode) { congestion.Clear(); random = new Unity.Mathematics.Random(0x397146bu); }
+        protected override void OnGamePreload(Purpose purpose, GameMode mode) { congestion.Clear(); schedule.Clear(); random = new Unity.Mathematics.Random(0x397146bu); }
         public override int GetUpdateInterval(SystemUpdatePhase phase) => native.GetUpdateInterval(phase);
         public override int GetUpdateOffset(SystemUpdatePhase phase) => native.GetUpdateOffset(phase);
         private bool Alive(Entity entity) => EntityManager.Exists(entity) && !EntityManager.HasComponent<Deleted>(entity) && !EntityManager.HasComponent<Destroyed>(entity);
@@ -104,16 +107,19 @@ namespace SuperTrafficSpawnBlock
                         for (int i = 0; i < input.Count; i++) dispatches[i] = new ServiceDispatch(input[i]);
                     }
                     congestion.Retain(live);
+                    schedule.Retain(live);
                     if (!paced) return;
                     foreach (Entity source in live)
                     {
+                        if (!BlockServiceSystem.IsOn(EntityManager, source) || clearance.IsBlocked(source)) { schedule.Reset(source); continue; }
                         var routes = routing.GetRoutes(source);
-                        if (routes == null) continue;
+                        if (routes == null) { schedule.Reset(source); continue; }
                         pending.TryGetValue(source, out int queued);
                         overdue.TryGetValue(source, out int blocked);
                         int factor = registration.RateFor(source);
-                        if (congestion.ShouldPause(source, factor, queued, blocked)) continue;
-                        int count = SpawnPacing.Budget(factor, queued);
+                        int capacity = factor == RateSchedule<Entity>.Half ? 1 : factor;
+                        if (congestion.ShouldPause(source, capacity, queued, blocked)) { schedule.Reset(source); continue; }
+                        int count = SpawnPacing.Budget(schedule.Next(source, factor), queued);
                         if (count == 0) continue;
                         var counts = DestinationAllocation.Allocate(count, routes.Count, n => random.NextInt(n));
                         for (int routeIndex = 0; routeIndex < routes.Count; routeIndex++)

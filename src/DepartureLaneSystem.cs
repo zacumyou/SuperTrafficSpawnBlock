@@ -34,6 +34,7 @@ namespace SuperTrafficSpawnBlock
         {
             base.OnCreate();
             registration = World.GetOrCreateSystemManaged<BlockPrefabSystem>();
+
             freshCars = GetEntityQuery(new EntityQueryDesc
             {
                 All = new[] { ComponentType.ReadOnly<Created>(), ComponentType.ReadOnly<Unspawned>(),
@@ -48,6 +49,7 @@ namespace SuperTrafficSpawnBlock
         {
             selector.Clear();
             logged = false;
+
             failed = false;
         }
 
@@ -74,6 +76,7 @@ namespace SuperTrafficSpawnBlock
                         if (index < 0) continue;
                         // A direct building-to-road start is supported. Never skip a driveway/connection lane.
                         while (index < path.Length && path[index].m_Target == source) index++;
+
                         if (index + 1 >= path.Length) continue;
                         var first = path[index];
                         var next = path[index + 1];
@@ -169,4 +172,5 @@ namespace SuperTrafficSpawnBlock
     }
 
 }
+
 

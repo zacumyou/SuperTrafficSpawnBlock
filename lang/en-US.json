@@ -31,5 +31,9 @@
   "SuperTrafficSpawnBlock.LoadWarning": "May place a heavy load on your system",
   "SuperTrafficSpawnBlock.Status.Waiting": "Waiting for block registration",
   "SuperTrafficSpawnBlock.Status.Ready": "Ready: source and sink",
-  "SuperTrafficSpawnBlock.Status.Inactive": "Inactive. See the mod log for details."
+  "SuperTrafficSpawnBlock.Status.Inactive": "Inactive. See the mod log for details.",
+  "SuperTrafficSpawnBlock.SinkRange": "Absorption range",
+  "SuperTrafficSpawnBlock.SinkNative": "Default",
+  "SuperTrafficSpawnBlock.SinkRangeHint": "Only absorbs vehicles on the final approach. Larger ranges remove vehicles before they reach the block.",
+  "SuperTrafficSpawnBlock.LocateSink": "Show this sink on the map"
 }

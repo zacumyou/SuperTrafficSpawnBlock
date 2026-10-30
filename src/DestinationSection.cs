@@ -13,7 +13,8 @@ namespace SuperTrafficSpawnBlock
         {
             var blocks = World.GetOrCreateSystemManaged<BlockPrefabSystem>();
             visible = Mod.Active && blocks.Ready && EntityManager.HasComponent<PrefabRef>(selectedEntity) &&
-                blocks.FactorFor(EntityManager.GetComponentData<PrefabRef>(selectedEntity).m_Prefab) > 0;
+                (blocks.FactorFor(EntityManager.GetComponentData<PrefabRef>(selectedEntity).m_Prefab) > 0 ||
+                 World.GetOrCreateSystemManaged<DestinationRoutingSystem>().IsSink(selectedEntity));
         }
     }
 }

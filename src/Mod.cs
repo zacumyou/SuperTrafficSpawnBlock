@@ -35,14 +35,26 @@ namespace SuperTrafficSpawnBlock
             Active = true;
             updates.UpdateBefore<BlockPrefabSystem, PrefabInitializeSystem>(SystemUpdatePhase.PrefabUpdate);
             updates.UpdateBefore<DestinationRoutingSystem, SpawnMultiplierSystem>(SystemUpdatePhase.GameSimulation);
+            updates.UpdateBefore<AdjacentRoadSystem, DestinationRoutingSystem>(SystemUpdatePhase.GameSimulation);
+            updates.UpdateBefore<AdjacentRoadSystem, Game.Serialization.ConnectedBuildingSystem>(SystemUpdatePhase.Deserialize);
             updates.UpdateBefore<SpawnMultiplierSystem, TrafficSpawnerAISystem>(SystemUpdatePhase.GameSimulation);
+            updates.UpdateBefore<SpawnClearanceSystem, SpawnMultiplierSystem>(SystemUpdatePhase.GameSimulation);
+            updates.UpdateBefore<SpawnClearanceSystem, VehicleSpawnSystem>(SystemUpdatePhase.GameSimulation);
             updates.UpdateBefore<GeneratedTrafficSystem, Game.Vehicles.InitializeSystem>(SystemUpdatePhase.Modification5);
             updates.UpdateAt<TrafficSinkSystem>(SystemUpdatePhase.GameSimulation);
+            updates.UpdateBefore<BlockProtectionSystem, Game.Objects.DamageSystem>(SystemUpdatePhase.Modification2);
+            updates.UpdateBefore<BlockProtectionSystem, Game.Objects.DestroySystem>(SystemUpdatePhase.Modification2);
+            updates.UpdateBefore<BlockProtectionSystem, Game.Events.IgniteSystem>(SystemUpdatePhase.Modification4);
+            updates.UpdateBefore<BlockProtectionSystem, Game.Events.FaceWeatherSystem>(SystemUpdatePhase.Modification4);
+            updates.UpdateBefore<BlockProtectionSystem, Game.Events.SubmergeSystem>(SystemUpdatePhase.Modification4);
+            updates.UpdateBefore<BlockServiceSystem, SpawnMultiplierSystem>(SystemUpdatePhase.GameSimulation);
             updates.UpdateAt<DestinationUI>(SystemUpdatePhase.UIUpdate);
+            updates.UpdateBefore<BlockIdentitySystem, DestinationUI>(SystemUpdatePhase.UIUpdate);
+            updates.UpdateBefore<SinkRangeOverlaySystem, Game.Rendering.OverlayRenderSystem>(SystemUpdatePhase.Rendering);
             updates.UpdateBefore<SpawnMultiplierSystem, TrafficSpawnerAISystem>(SystemUpdatePhase.LoadSimulation);
             updates.UpdateBefore<DepartureTimingSystem, Game.Vehicles.InitializeSystem>(SystemUpdatePhase.Modification5);
             updates.UpdateBefore<DepartureLaneSystem, Game.Vehicles.InitializeSystem>(SystemUpdatePhase.Modification5);
-            Log.Info(DisplayName + " 0.4.0 loaded. Unified source with per-block rate and multiple destinations.");
+            Log.Info(DisplayName + " 0.4.8 loaded. Vehicle footprint clearance before departure.");
         }
 
         private void RegisterIcons()
@@ -92,6 +104,12 @@ namespace SuperTrafficSpawnBlock
         }
     }
 }
+
+
+
+
+
+
 
 
 

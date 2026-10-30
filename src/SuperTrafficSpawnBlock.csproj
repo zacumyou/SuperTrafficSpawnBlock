@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Configurations>Debug;Release</Configurations>
-    <Version>0.4.0</Version>
+    <Version>0.4.8</Version>
     <AssemblyName>SuperTrafficSpawnBlock</AssemblyName>
     <RootNamespace>SuperTrafficSpawnBlock</RootNamespace>
     <AssemblyTitle>Super Traffic Spawn Block</AssemblyTitle>
@@ -9,14 +9,8 @@
   </PropertyGroup>
   <Import Project="$(CSII_TOOLPATH)\Mod.props" />
   <Import Project="$(CSII_TOOLPATH)\Mod.targets" />
-  <PropertyGroup>
-    <UserDataPath>$(CSII_USERDATAPATH)</UserDataPath>
-    <UnityModProjectPath>$(CSII_UNITYMODPROJECTPATH)</UnityModProjectPath>
-    <ModPostProcessorPath>$(CSII_MODPOSTPROCESSORPATH)</ModPostProcessorPath>
-    <ModPublisherPath>$(CSII_MODPUBLISHERPATH)</ModPublisherPath>
-    <MSCORLIBPath>$(CSII_MSCORLIBPATH)</MSCORLIBPath>
-    <LocalModsPath>$(MSBuildProjectDirectory)\..\local</LocalModsPath>
-  </PropertyGroup>
+  <PropertyGroup><LocalModsPath>$(MSBuildProjectDirectory)\..\local</LocalModsPath></PropertyGroup>
+  
   <ItemGroup>
     <EmbeddedResource Include="..\lang\en-US.json" LogicalName="SuperTrafficSpawnBlock.lang.en-US.json" />
     <EmbeddedResource Include="..\lang\ko-KR.json" LogicalName="SuperTrafficSpawnBlock.lang.ko-KR.json" />
@@ -38,6 +32,12 @@
     <Copy SourceFiles="@(FilesToDeploy)" DestinationFolder="$(DeployDir)" />
   </Target>
 </Project>
+
+
+
+
+
+
 
 
 

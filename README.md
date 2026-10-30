@@ -1,3 +1,5 @@
+> Published source: **0.4.8**. See [CHANGELOG.md](CHANGELOG.md) for the matching Paradox Mods update.
+
 # Super Traffic Spawn Block
 
 [Subscribe on Paradox Mods](https://mods.paradoxplaza.com/mods/160650/Windows) · [Support forum](https://forum.paradoxplaza.com/forum/threads/super-traffic-spawn-block.1942707/)

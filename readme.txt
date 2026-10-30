@@ -1,10 +1,19 @@
-Super Traffic Spawn Block 0.4.0
+Super Traffic Spawn Block 0.4.8
+
+0.4.8 로컬: 출발 직전 실제 차체 크기로 주변 차량과의 겹침을 검사합니다. 출발/첫 도로 진입 공간이 막히면 보이지 않는 대기 상태를 유지하고 추가 생성도 억제합니다.
+앞뒤 2m, 좌우 0.35m 여유와 높이 차이를 반영하며, 같은 순간 출발하는 차량끼리도 공간을 예약합니다. 기존 차로 분산은 유지합니다.
+빌드·대표 공간 검사 통과. 실제 정체 구간 개선 효과는 실게임 미확인입니다.
+
+0.4.7 로컬: 도로 연결이 없는 생성·흡입 블록은 정면의 인접 도로에 자동 연결합니다. 구획 타일이 없는 고속도로도 대상으로 합니다.
+조건: 정면 ±30도, 부지 앞쪽부터 도로 가장자리까지 8m 이내, 높이 차이 3m 이내. 배치 후 시뮬레이션을 실행하면 연결을 검사합니다.
+이동·회전·도로 변경 시 자동 연결을 재검사합니다. 기존 정상 연결과 차로 분산은 유지합니다.
+빌드·대표 기하 검사 통과. 실제 고속도로 생성·흡입, 저장/불러오기 및 0.4.6 재해 보호는 실게임 미확인입니다. 마지막 공개 업로드는 0.4.5입니다.
 
 사용 방법
 1. 도로 > Maintenance에서 Super Traffic Spawn Block 또는 Super Traffic Sink Block을 배치합니다.
 2. 스폰 블록을 클릭합니다. 선택 패널에서 차량 목적지와 차량 생성 배율을 설정합니다.
 3. 목적지는 내장 체크박스로 복수 선택할 수 있습니다. 아무 목적지도 선택하지 않으면 도시 외부가 기본입니다.
-4. 배율은 내장 라디오 버튼으로 1 / 2 / 5 / 10 / 20 / 50배를 선택합니다. 새 블록은 기본 20배입니다.
+4. 배율은 내장 라디오 버튼으로 0.5 / 1 / 2 / 3 / 5 / 10 / 15 / 20 / 50배를 선택합니다. 새 블록은 기본 2배입니다.
 
 블록별 설정
 - 새 배치 목록의 스폰 블록을 하나로 통합했습니다. UI 정렬은 스폰 9000, 흡입 9001입니다.
@@ -32,7 +41,7 @@ Super Traffic Spawn Block 0.4.0
 - 실제 게임의 메뉴 통합, 복수 경로 주행과 새 저장 형식의 저장/재로드는 미검증입니다. 모드가 필요한 세이브에서는 모드를 유지하세요.
 
 English
-One placeable source plus one sink. Select a source to set its per-block rate (1/2/5/10/20/50x) using native radio controls and destinations using native checkboxes.
+One placeable source plus one sink. Select a source to set its per-block rate (0.5/1/2/3/5/10/15/20/50x) using native radio controls and destinations using native checkboxes.
 Each new vehicle draws one selected destination with equal 1/N probability. All selected paths must be ready before generating traffic. No selections defaults to outside city.
 Old rate variants are hidden compatibility prefabs; existing instances retain their original rates until changed. Old single-destination data migrates to the new target buffer.
 Build and targeted tests pass. In-game multi-route operation and save/reload remain unverified.
@@ -46,3 +55,23 @@ Build and targeted tests pass. In-game multi-route operation and save/reload rem
 0.4.0: 생성 블록은 CSSuperTrafficSpawnBlockOut, 목적지 블록은 CSSuperTrafficSpawnBlockIn의 모델/재질/LOD/썸네일을 사용합니다. 두 커스텀 에셋이 설치되어 있어야 합니다. 기존 도로 유지보수 메뉴의 모드 블록을 배치하세요. 원본 커스텀 에셋 파일과 기존 배율/목적지 저장 형식은 변경하지 않습니다.
 0.4.0: 생성/목적지 블록 부지를 기본 건물 최소 크기인 1x1칸(8x8m)으로 변경. 모델 자체는 4x4m 유지.
 0.4.0: 유지보수 메뉴에서 새로 배치하는 생성 블록은 기본 2x. 기존 블록의 배율은 유지됩니다.
+
+0.4.1: Sink blocks now have per-block absorption range radios (Default, 8m, 16m, 32m).
+A translucent dotted radius appears only while that sink is selected (except Default).
+Expanded ranges absorb assigned generated vehicles on the final connected road approach.
+Existing sinks retain native endpoint absorption until a range is selected.
+
+
+0.4.2: 기본 서비스 On/Off 버튼으로 생성과 흡입을 중지합니다. 생성 블록을 끄면 아직 출발하지 않은 대기 차량도 취소합니다. 이미 주행 중인 차량은 유지됩니다.
+생성 배율: 0.5 / 1 / 2 / 3 / 5 / 10 / 15 / 20 / 50x. 기본 2x. 0.5x는 두 생성 주기마다 한 대를 시도합니다.
+흡입 범위: 기본 / 16m / 32m / 64m. 이전 8m 설정은 16m로 적용됩니다.
+꺼진 흡입 블록은 새 차량의 목적지 배분에서 제외합니다. 선택한 목적지가 모두 꺼졌다면 생성도 대기합니다. 다시 켜면 기존 선택이 복구됩니다.
+
+0.4.3: 생성/흡입 블록 이름에 저장되는 #번호를 표시합니다. 목적지 목록에서도 같은 번호를 사용합니다.
+목적지 옆 위치 아이콘을 누르면 카메라가 해당 흡입 블록으로 이동합니다. 이름과 위치 핀을 표시하며 목적지 체크는 바꾸지 않습니다.
+
+0.4.4: 같은 도로 구간의 생성→흡입 경로도 출발 차로를 분산합니다. 출발 구간은 같은 방향의 일반 차로에 번갈아 배정하고, 이후 목적지 진입은 게임의 차로 변경 처리를 사용합니다. 실제 주행 가능 거리가 40m 미만이거나 별도 진입로가 있으면 기존 처리를 유지합니다.
+
+0.4.5: 0.4.4의 같은 도로 차로 분산 변경을 되돌렸습니다. 모드 블록의 사용 중인 차량 목록을 숨기고, 차량 목적지 목록 오른쪽의 위치 아이콘 크기를 수정했습니다.
+
+0.4.6: 생성·흡입 블록의 화재, 침수, 폭풍 등 재해 피해와 파괴를 차단합니다. 불도저 철거와 서비스 켜기/끄기는 유지됩니다. 주변 도로는 보호하지 않습니다.

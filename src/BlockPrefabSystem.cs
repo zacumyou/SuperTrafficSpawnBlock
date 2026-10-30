@@ -28,7 +28,8 @@ namespace SuperTrafficSpawnBlock
             if (!EntityManager.HasComponent<PrefabRef>(source)) return 0;
             int legacy = FactorFor(EntityManager.GetComponentData<PrefabRef>(source).m_Prefab);
             if (legacy == 0) return 0;
-            return EntityManager.HasComponent<SpawnRate>(source) ? DispatchPlan<int>.NormalizeMultiplier(EntityManager.GetComponentData<SpawnRate>(source).Factor) : legacy;
+            int saved = EntityManager.HasComponent<SpawnRate>(source) ? EntityManager.GetComponentData<SpawnRate>(source).Factor : legacy;
+            return RateSchedule<Entity>.Allowed(saved) ? saved : 2;
         }
         internal int FactorFor(Entity prefab) => factors.TryGetValue(prefab, out int factor) ? factor : 0;
         protected override void OnCreate()
@@ -102,6 +103,7 @@ namespace SuperTrafficSpawnBlock
                     var clone = (BuildingPrefab)source.Clone(name);
                     clone.asset = null;
                     clone.Remove<ObsoleteIdentifiers>();
+                    clone.Remove<DestructibleObject>();
                     clone.GetComponent<Game.Prefabs.TrafficSpawner>().m_SpawnRate = 0;
                     // Native building lots use 8 m cells; keep the 4 m model at its imported scale.
                     clone.m_LotWidth = 1;
